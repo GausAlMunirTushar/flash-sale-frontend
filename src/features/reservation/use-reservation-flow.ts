@@ -15,10 +15,10 @@ export function useReservationFlow() {
   const { phase, reservation, payment, setPhase, setReservation, setPayment, reset } =
     useReservationStore();
 
-  const invalidateSeats = useCallback(
-    () => queryClient.invalidateQueries({ queryKey: ["seat-stats"] }),
-    [queryClient]
-  );
+  const invalidateSeats = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["seat-stats"] });
+    queryClient.invalidateQueries({ queryKey: ["seat-map"] });
+  }, [queryClient]);
 
   const handleExpire = useCallback(() => {
     setPhase("expired");
@@ -33,26 +33,30 @@ export function useReservationFlow() {
     onExpire: handleExpire,
   });
 
-  const handleReserve = useCallback(async () => {
-    if (!seatStats || seatStats.available <= 0) {
-      setPhase("soldOut");
-      return;
-    }
+  const handleReserve = useCallback(
+    async (seatId: string) => {
+      if (!seatStats || seatStats.available <= 0) {
+        setPhase("soldOut");
+        return;
+      }
 
-    setPhase("reserving");
-    try {
-      const created = await createReservation();
-      setReservation(created);
-      setPhase("holding");
-      toast.success("Seat reserved", {
-        description: `Seat ${created.seatNumber} is on hold for 5 minutes.`,
-      });
-      invalidateSeats();
-    } catch {
-      setPhase("idle");
-      toast.error("Couldn't reserve a seat", { description: "Please try again." });
-    }
-  }, [seatStats, setPhase, setReservation, invalidateSeats]);
+      setPhase("reserving");
+      try {
+        const created = await createReservation(seatId);
+        setReservation(created);
+        setPhase("holding");
+        toast.success("Seat reserved", {
+          description: `Seat ${created.seatNumber} is on hold for 5 minutes.`,
+        });
+        invalidateSeats();
+      } catch {
+        setPhase("idle");
+        toast.error("That seat just got taken", { description: "Please pick another seat." });
+        invalidateSeats();
+      }
+    },
+    [seatStats, setPhase, setReservation, invalidateSeats]
+  );
 
   const handlePay = useCallback(async () => {
     if (!reservation) return;
@@ -71,11 +75,12 @@ export function useReservationFlow() {
   }, [reservation, setPhase, setPayment, invalidateSeats]);
 
   const handleCancel = useCallback(async () => {
-    await cancelReservation();
+    if (!reservation) return;
+    await cancelReservation(reservation.seatNumber);
     reset();
     toast("Reservation cancelled", { description: "Your seat was returned to inventory." });
     invalidateSeats();
-  }, [reset, invalidateSeats]);
+  }, [reservation, reset, invalidateSeats]);
 
   const handleReserveAgain = useCallback(() => {
     reset();

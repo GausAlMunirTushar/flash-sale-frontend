@@ -1,32 +1,30 @@
 import { HOLD_DURATION_SECONDS } from "@/constants/reservation";
-import { registerLock, releaseLock } from "@/services/seat.service";
+import { lockSeat, releaseSeat } from "@/services/seat.service";
 import type { Reservation } from "@/types/reservation";
 
-function randomSeatNumber() {
-  const row = String.fromCharCode(65 + Math.floor(Math.random() * 6));
-  const num = 1 + Math.floor(Math.random() * 12);
-  return `${row}${num}`;
-}
-
-export async function createReservation(): Promise<Reservation> {
+export async function createReservation(seatId: string): Promise<Reservation> {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
-  registerLock();
+  const seat = lockSeat(seatId);
+  if (!seat) {
+    throw new Error("Seat is no longer available");
+  }
+
   const createdAt = Date.now();
 
   return {
     id: `RSV-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-    seatNumber: randomSeatNumber(),
+    seatNumber: seat.id,
     createdAt,
     expiresAt: createdAt + HOLD_DURATION_SECONDS * 1000,
   };
 }
 
-export async function cancelReservation(): Promise<void> {
+export async function cancelReservation(seatId: string): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, 300));
-  releaseLock(false);
+  releaseSeat(seatId, false);
 }
 
-export async function expireReservation(): Promise<void> {
-  releaseLock(false);
+export function expireReservation(seatId: string): void {
+  releaseSeat(seatId, false);
 }
