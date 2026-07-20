@@ -5,3 +5,7 @@ export interface PaymentResult {
   amount: number;
   paidAt: number;
 }
+
+export interface MockPaymentPayload {
+  reservationId: string;
+}

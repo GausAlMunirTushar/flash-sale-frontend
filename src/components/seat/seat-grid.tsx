@@ -1,6 +1,6 @@
 "use client";
 
-import { RefreshCw } from "lucide-react";
+import { AlertCircle, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRefreshCountdown } from "@/hooks/use-refresh-countdown";
@@ -31,8 +31,20 @@ interface SeatGridProps {
 }
 
 export function SeatGrid({ onSelectSeat, selectionDisabled }: SeatGridProps) {
-  const { data: seats, isLoading } = useSeatMap();
+  const { data: seats, isLoading, isError, error } = useSeatMap();
   const refreshIn = useRefreshCountdown(REFRESH_INTERVAL_SECONDS);
+
+  if (isError) {
+    return (
+      <Card className="rounded-3xl border-border shadow-sm">
+        <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
+          <AlertCircle className="size-8 text-destructive" />
+          <p className="font-semibold">Failed to load seats</p>
+          <p className="text-sm text-muted-foreground">{error?.message || "Could not connect to server"}</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const rows = seats
     ? Array.from(new Set(seats.map((seat) => seat.row))).sort()
@@ -44,7 +56,9 @@ export function SeatGrid({ onSelectSeat, selectionDisabled }: SeatGridProps) {
         <div>
           <p className="text-lg font-semibold">Choose Your Seat</p>
           <p className="text-sm text-muted-foreground">
-            Click on any available seat to reserve it for 5 minutes.
+            {seats && seats.length === 0
+              ? "No seats available at the moment."
+              : "Click on any available seat to reserve it for 5 minutes."}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
@@ -68,7 +82,7 @@ export function SeatGrid({ onSelectSeat, selectionDisabled }: SeatGridProps) {
           rows.map((row) => (
             <div key={row} className="flex items-center gap-2">
               <span className="w-4 shrink-0 text-sm font-medium text-muted-foreground">{row}</span>
-              <div className="grid flex-1 grid-cols-10 gap-2">
+              <div className="grid flex-1 grid-cols-10 gap-1.5 sm:gap-2">
                 {seats
                   .filter((seat) => seat.row === row)
                   .sort((a, b) => a.number - b.number)
@@ -82,7 +96,7 @@ export function SeatGrid({ onSelectSeat, selectionDisabled }: SeatGridProps) {
                         onClick={() => onSelectSeat(seat.id)}
                         aria-label={`Seat ${seat.id} — ${seat.status}`}
                         className={cn(
-                          "flex h-9 items-center justify-center rounded-lg border text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                          "flex h-9 min-h-[44px] items-center justify-center rounded-lg border text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:h-9 sm:min-h-0",
                           SEAT_STYLES[seat.status]
                         )}
                       >

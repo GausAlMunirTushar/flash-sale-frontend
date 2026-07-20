@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animate } from "framer-motion";
 
 interface AnimatedCounterProps {
@@ -10,11 +10,19 @@ interface AnimatedCounterProps {
 
 export function AnimatedCounter({ value, className }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const previousValue = useRef(0);
+  const previousValue = useRef(value);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
 
   useEffect(() => {
     const node = ref.current;
-    if (!node) return;
+    if (!node || !ready) {
+      node!.textContent = value.toString();
+      return;
+    }
 
     const controls = animate(previousValue.current, value, {
       duration: 0.6,
@@ -25,13 +33,12 @@ export function AnimatedCounter({ value, className }: AnimatedCounterProps) {
     });
 
     previousValue.current = value;
-
     return () => controls.stop();
-  }, [value]);
+  }, [value, ready]);
 
   return (
     <span ref={ref} className={className}>
-      0
+      {ready ? value : value}
     </span>
   );
 }

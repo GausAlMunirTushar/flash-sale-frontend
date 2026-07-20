@@ -15,6 +15,8 @@ export function ReservationSection() {
     handlePay,
     handleCancel,
     handleReserveAgain,
+    cancelDialogOpen,
+    setCancelDialogOpen,
   } = useReservationFlow();
 
   return (
@@ -33,6 +35,8 @@ export function ReservationSection() {
           onPay={handlePay}
           onCancel={handleCancel}
           onReserveAgain={handleReserveAgain}
+          cancelDialogOpen={cancelDialogOpen}
+          setCancelDialogOpen={setCancelDialogOpen}
         />
         <HowItWorks />
       </div>

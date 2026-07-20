@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useCountdown } from "@/hooks/use-countdown";
@@ -14,6 +14,7 @@ export function useReservationFlow() {
   const { data: seatStats } = useSeatStats();
   const { phase, reservation, payment, setPhase, setReservation, setPayment, reset } =
     useReservationStore();
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
   const invalidateSeats = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["seat-stats"] });
@@ -76,17 +77,17 @@ export function useReservationFlow() {
 
   const handleCancel = useCallback(async () => {
     if (!reservation) return;
-    await cancelReservation(reservation.seatNumber);
-    reset();
-    toast("Reservation cancelled", { description: "Your seat was returned to inventory." });
-    invalidateSeats();
+    try {
+      await cancelReservation(reservation.id);
+      reset();
+      toast("Reservation cancelled", { description: "Your seat was returned to inventory." });
+      invalidateSeats();
+    } catch {
+      toast.error("Failed to cancel", { description: "Please try again." });
+    }
   }, [reservation, reset, invalidateSeats]);
 
   const handleReserveAgain = useCallback(() => {
-    reset();
-  }, [reset]);
-
-  const handleReturn = useCallback(() => {
     reset();
   }, [reset]);
 
@@ -100,6 +101,7 @@ export function useReservationFlow() {
     handlePay,
     handleCancel,
     handleReserveAgain,
-    handleReturn,
+    cancelDialogOpen,
+    setCancelDialogOpen,
   };
 }

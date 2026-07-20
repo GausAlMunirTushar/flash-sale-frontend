@@ -12,7 +12,6 @@ import {
   Loader2,
   Lock,
   MousePointerClick,
-  ShieldCheck,
   TimerOff,
   Trash2,
 } from "lucide-react";
@@ -21,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CircularProgress } from "@/components/shared/circular-progress";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import type { CountdownZone } from "@/hooks/use-countdown";
 import { formatCountdown } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -44,6 +44,8 @@ interface ReservationPanelProps {
   onPay: () => void;
   onCancel: () => void;
   onReserveAgain: () => void;
+  cancelDialogOpen: boolean;
+  setCancelDialogOpen: (open: boolean) => void;
 }
 
 export function ReservationPanel({
@@ -57,39 +59,54 @@ export function ReservationPanel({
   onPay,
   onCancel,
   onReserveAgain,
+  cancelDialogOpen,
+  setCancelDialogOpen,
 }: ReservationPanelProps) {
   return (
-    <Card className="rounded-3xl border-border shadow-sm">
-      <CardHeader className="flex-row items-center justify-between border-b border-border/60 pb-4">
-        <p className="text-lg font-semibold">Your Reservation</p>
-        {(phase === "holding" || phase === "paying") && (
-          <Badge className="gap-1 bg-primary/10 text-primary hover:bg-primary/10">
-            <Lock className="size-3" />
-            Locked
-          </Badge>
-        )}
-      </CardHeader>
+    <>
+      <Card className="rounded-3xl border-border shadow-sm">
+        <CardHeader className="flex-row items-center justify-between border-b border-border/60 pb-4">
+          <p className="text-lg font-semibold">Your Reservation</p>
+          {(phase === "holding" || phase === "paying") && (
+            <Badge className="gap-1 bg-primary/10 text-primary hover:bg-primary/10">
+              <Lock className="size-3" />
+              Locked
+            </Badge>
+          )}
+        </CardHeader>
 
-      <CardContent className="pt-6">
-        {phase === "idle" && <IdleState />}
-        {phase === "reserving" && <ReservingState />}
-        {(phase === "holding" || phase === "paying") && reservation && (
-          <HoldingState
-            reservation={reservation}
-            remainingSeconds={remainingSeconds}
-            zone={zone}
-            progress={progress}
-            isPulsing={isPulsing}
-            isPaying={phase === "paying"}
-            onPay={onPay}
-            onCancel={onCancel}
-          />
-        )}
-        {phase === "expired" && <ExpiredState onReserveAgain={onReserveAgain} />}
-        {phase === "soldOut" && <SoldOutState />}
-        {phase === "success" && payment && <SuccessState payment={payment} onReserveAgain={onReserveAgain} />}
-      </CardContent>
-    </Card>
+        <CardContent className="pt-6">
+          {phase === "idle" && <IdleState />}
+          {phase === "reserving" && <ReservingState />}
+          {(phase === "holding" || phase === "paying") && reservation && (
+            <HoldingState
+              reservation={reservation}
+              remainingSeconds={remainingSeconds}
+              zone={zone}
+              progress={progress}
+              isPulsing={isPulsing}
+              isPaying={phase === "paying"}
+              onPay={onPay}
+              onCancel={() => setCancelDialogOpen(true)}
+            />
+          )}
+          {phase === "expired" && <ExpiredState onReserveAgain={onReserveAgain} />}
+          {phase === "soldOut" && <SoldOutState />}
+          {phase === "success" && payment && <SuccessState payment={payment} onReserveAgain={onReserveAgain} />}
+        </CardContent>
+      </Card>
+
+      <ConfirmDialog
+        open={cancelDialogOpen}
+        onOpenChange={setCancelDialogOpen}
+        title="Cancel Reservation?"
+        description="Your seat will be released back to inventory. This action cannot be undone."
+        confirmLabel="Yes, Cancel"
+        cancelLabel="Keep It"
+        variant="destructive"
+        onConfirm={onCancel}
+      />
+    </>
   );
 }
 
@@ -160,7 +177,7 @@ function HoldingState({
         <Row icon={Armchair} label="Seat" value={reservation.seatNumber} />
         <Row icon={Clock} label="Reserved At" value={formatTimestamp(reservation.createdAt)} />
         <Row icon={Clock} label="Expires At" value={formatTimestamp(reservation.expiresAt)} />
-        <Row icon={Hash} label="Reservation ID" value={reservation.id} />
+        <Row icon={Hash} label="Reservation" value={reservation.reservationCode} />
       </dl>
 
       <div className="space-y-2 pt-1">
@@ -188,11 +205,6 @@ function HoldingState({
           Cancel Reservation
         </Button>
       </div>
-
-      <p className="flex items-center justify-center gap-1.5 text-xs text-success">
-        <ShieldCheck className="size-3.5" />
-        Your payment is 100% secure and encrypted.
-      </p>
     </div>
   );
 }
@@ -267,10 +279,9 @@ function Row({ icon: Icon, label, value }: { icon: React.ComponentType<{ classNa
 }
 
 function formatTimestamp(ms: number) {
-  return new Date(ms).toLocaleString(undefined, {
+  return new Date(ms).toLocaleDateString(undefined, {
     month: "short",
     day: "numeric",
-    year: "numeric",
     hour: "numeric",
     minute: "2-digit",
   });

@@ -1,13 +1,24 @@
 "use client";
 
-import { CalendarClock, Clock, ClipboardCheck, Users, Armchair } from "lucide-react";
+import { AlertCircle, Armchair, CalendarClock, ClipboardCheck, Clock, Users } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { useSeatStats } from "@/hooks/use-seat-stats";
 import { formatCountdown } from "@/lib/format";
 
 export function StatsRow() {
-  const { data, isLoading } = useSeatStats();
+  const { data, isLoading, isError } = useSeatStats();
+
+  if (isError) {
+    return (
+      <section className="mx-auto max-w-6xl px-6 py-8">
+        <div className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
+          <AlertCircle className="size-4 text-destructive" />
+          Could not load seat statistics
+        </div>
+      </section>
+    );
+  }
 
   if (isLoading || !data) {
     return (

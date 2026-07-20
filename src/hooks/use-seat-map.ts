@@ -8,6 +8,8 @@ export function useSeatMap() {
     queryKey: ["seat-map"],
     queryFn: getSeatMap,
     refetchInterval: REFETCH_INTERVAL_MS,
+    retry: 3,
+    staleTime: 2000,
   });
 }
 

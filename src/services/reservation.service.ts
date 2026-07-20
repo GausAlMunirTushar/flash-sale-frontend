@@ -1,30 +1,32 @@
-import { HOLD_DURATION_SECONDS } from "@/constants/reservation";
-import { lockSeat, releaseSeat } from "@/services/seat.service";
-import type { Reservation } from "@/types/reservation";
+import api from '@/lib/api';
+import type { BackendReservation, Reservation } from '@/types/reservation';
 
 export async function createReservation(seatId: string): Promise<Reservation> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  const { data } = await api.post<BackendReservation>('/reservations', { seatId });
+  return toFrontendReservation(data);
+}
 
-  const seat = lockSeat(seatId);
-  if (!seat) {
-    throw new Error("Seat is no longer available");
+export async function findMyReservation(): Promise<Reservation | null> {
+  try {
+    const { data } = await api.get<BackendReservation | null>('/reservations/me');
+    return data ? toFrontendReservation(data) : null;
+  } catch {
+    return null;
   }
+}
 
-  const createdAt = Date.now();
+export async function cancelReservation(reservationId: string): Promise<void> {
+  await api.delete(`/reservations/${reservationId}`);
+}
 
+function toFrontendReservation(r: BackendReservation): Reservation {
   return {
-    id: `RSV-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-    seatNumber: seat.id,
-    createdAt,
-    expiresAt: createdAt + HOLD_DURATION_SECONDS * 1000,
+    id: r.id,
+    seatNumber: r.seatNumber,
+    reservationCode: r.reservationCode,
+    status: r.status,
+    expiresAt: new Date(r.expiresAt).getTime(),
+    createdAt: new Date(r.createdAt).getTime(),
+    paidAt: r.paidAt ? new Date(r.paidAt).getTime() : null,
   };
-}
-
-export async function cancelReservation(seatId: string): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  releaseSeat(seatId, false);
-}
-
-export function expireReservation(seatId: string): void {
-  releaseSeat(seatId, false);
 }

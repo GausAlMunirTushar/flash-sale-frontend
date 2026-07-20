@@ -12,4 +12,18 @@ export interface Reservation {
   seatNumber: string;
   expiresAt: number;
   createdAt: number;
+  reservationCode: string;
+  status: string;
+  paidAt: number | null;
+}
+
+export interface BackendReservation {
+  id: string;
+  reservationCode: string;
+  seatId: string;
+  seatNumber: string;
+  status: 'LOCKED' | 'PAID' | 'EXPIRED' | 'CANCELLED';
+  expiresAt: string;
+  paidAt: string | null;
+  createdAt: string;
 }

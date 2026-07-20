@@ -25,7 +25,7 @@ export function Hero() {
 
   return (
     <section className="mx-auto max-w-6xl px-6 pt-10">
-      <div className="relative grid items-center gap-10 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-urgency-red/5 via-transparent to-primary/5 px-8 py-14 sm:grid-cols-2 sm:px-12">
+      <div className="relative grid items-center gap-10 overflow-hidden rounded-3xl border border-border bg-linear-to-br from-urgency-red/5 via-transparent to-primary/5 px-8 py-14 sm:grid-cols-2 sm:px-12">
         <div>
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Badge className="gap-1.5 bg-urgency-red/10 text-urgency-red hover:bg-urgency-red/10">
