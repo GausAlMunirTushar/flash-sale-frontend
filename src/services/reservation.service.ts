@@ -1,8 +1,8 @@
 import api from '@/lib/api';
 import type { BackendReservation, Reservation } from '@/types/reservation';
 
-export async function createReservation(seatId: string): Promise<Reservation> {
-  const { data } = await api.post<BackendReservation>('/reservations', { seatId });
+export async function createReservation(seatId: string, phone?: string): Promise<Reservation> {
+  const { data } = await api.post<BackendReservation>('/reservations', { seatId, phone });
   return toFrontendReservation(data);
 }
 
@@ -28,5 +28,6 @@ function toFrontendReservation(r: BackendReservation): Reservation {
     expiresAt: new Date(r.expiresAt).getTime(),
     createdAt: new Date(r.createdAt).getTime(),
     paidAt: r.paidAt ? new Date(r.paidAt).getTime() : null,
+    phone: r.phone,
   };
 }

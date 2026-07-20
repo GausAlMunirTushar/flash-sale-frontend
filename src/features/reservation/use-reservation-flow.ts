@@ -15,6 +15,7 @@ export function useReservationFlow() {
   const { phase, reservation, payment, setPhase, setReservation, setPayment, reset } =
     useReservationStore();
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [phone, setPhone] = useState("");
 
   const invalidateSeats = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["seat-stats"] });
@@ -43,7 +44,7 @@ export function useReservationFlow() {
 
       setPhase("reserving");
       try {
-        const created = await createReservation(seatId);
+        const created = await createReservation(seatId, phone || undefined);
         setReservation(created);
         setPhase("holding");
         toast.success("Seat reserved", {
@@ -112,5 +113,7 @@ export function useReservationFlow() {
     handleReserveAgain,
     cancelDialogOpen,
     setCancelDialogOpen,
+    phone,
+    setPhone,
   };
 }

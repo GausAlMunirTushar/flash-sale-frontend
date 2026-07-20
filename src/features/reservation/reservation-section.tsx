@@ -16,28 +16,29 @@ export function ReservationSection() {
     handleReserveAgain,
     cancelDialogOpen,
     setCancelDialogOpen,
+    phone,
+    setPhone,
   } = useReservationFlow();
 
   return (
-    <section id="reserve" className="mx-auto grid max-w-6xl gap-6 px-6 py-6 lg:grid-cols-[1fr_380px]">
+    <section id="reserve" className="mx-auto grid max-w-6xl items-stretch gap-6 px-6 py-6 lg:grid-cols-[1fr_380px]">
       <SeatGrid onSelectSeat={handleReserve} selectionDisabled={phase !== "idle"} />
-
-      <div className="space-y-6">
-        <ReservationPanel
-          phase={phase}
-          reservation={reservation}
-          payment={payment}
-          remainingSeconds={countdown.remainingSeconds}
-          zone={countdown.zone}
-          progress={countdown.progress}
-          isPulsing={countdown.isPulsing}
-          onPay={handlePay}
-          onCancel={handleCancel}
-          onReserveAgain={handleReserveAgain}
-          cancelDialogOpen={cancelDialogOpen}
-          setCancelDialogOpen={setCancelDialogOpen}
-        />
-      </div>
+      <ReservationPanel
+        phase={phase}
+        reservation={reservation}
+        payment={payment}
+        remainingSeconds={countdown.remainingSeconds}
+        zone={countdown.zone}
+        progress={countdown.progress}
+        isPulsing={countdown.isPulsing}
+        onPay={handlePay}
+        onCancel={handleCancel}
+        onReserveAgain={handleReserveAgain}
+        cancelDialogOpen={cancelDialogOpen}
+        setCancelDialogOpen={setCancelDialogOpen}
+        phone={phone}
+        onPhoneChange={setPhone}
+      />
     </section>
   );
 }

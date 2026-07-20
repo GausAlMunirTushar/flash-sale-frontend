@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertCircle, RefreshCw } from "lucide-react";
+import { MdEventSeat } from "react-icons/md";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRefreshCountdown } from "@/hooks/use-refresh-countdown";
@@ -36,7 +37,7 @@ export function SeatGrid({ onSelectSeat, selectionDisabled }: SeatGridProps) {
 
   if (isError) {
     return (
-      <Card className="rounded-xl border-border">
+      <Card className="h-full rounded-xl border-border">
         <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
           <AlertCircle className="size-8 text-destructive" />
           <p className="font-semibold">Failed to load seats</p>
@@ -51,7 +52,7 @@ export function SeatGrid({ onSelectSeat, selectionDisabled }: SeatGridProps) {
     : [];
 
   return (
-      <Card className="rounded-xl border-border">
+      <Card className="h-full rounded-xl border-border">
       <CardHeader className="flex-col items-start gap-3 border-b border-border/60 pb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-lg font-semibold">Choose Your Seat</p>
@@ -96,11 +97,12 @@ export function SeatGrid({ onSelectSeat, selectionDisabled }: SeatGridProps) {
                         onClick={() => onSelectSeat(seat.id)}
                         aria-label={`Seat ${seat.id} — ${seat.status}`}
                         className={cn(
-                          "flex h-9 min-h-[44px] items-center justify-center rounded-lg border text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:h-9 sm:min-h-0",
+                          "flex h-9 min-h-[44px] flex-col items-center justify-center gap-0.5 rounded-lg border text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:h-9 sm:min-h-0",
                           SEAT_STYLES[seat.status]
                         )}
                       >
-                        {seat.number}
+                        <MdEventSeat className="size-3.5 sm:size-4" />
+                        <span className="text-[10px] leading-none sm:text-xs">{seat.number}</span>
                       </button>
                     );
                   })}

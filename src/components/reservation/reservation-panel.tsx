@@ -12,6 +12,7 @@ import {
   Loader2,
   Lock,
   MousePointerClick,
+  Smartphone,
   TimerOff,
   Trash2,
 } from "lucide-react";
@@ -46,6 +47,8 @@ interface ReservationPanelProps {
   onReserveAgain: () => void;
   cancelDialogOpen: boolean;
   setCancelDialogOpen: (open: boolean) => void;
+  phone: string;
+  onPhoneChange: (phone: string) => void;
 }
 
 export function ReservationPanel({
@@ -61,10 +64,12 @@ export function ReservationPanel({
   onReserveAgain,
   cancelDialogOpen,
   setCancelDialogOpen,
+  phone,
+  onPhoneChange,
 }: ReservationPanelProps) {
   return (
     <>
-      <Card className="rounded-xl border-border">
+      <Card className="h-full rounded-xl border-border">
         <CardHeader className="flex-row items-center justify-between border-b border-border/60 pb-4">
           <p className="text-lg font-semibold">Your Reservation</p>
           {(phase === "holding" || phase === "paying") && (
@@ -88,6 +93,8 @@ export function ReservationPanel({
               isPaying={phase === "paying"}
               onPay={onPay}
               onCancel={() => setCancelDialogOpen(true)}
+              phone={phone}
+              onPhoneChange={onPhoneChange}
             />
           )}
           {phase === "expired" && <ExpiredState onReserveAgain={onReserveAgain} />}
@@ -142,6 +149,8 @@ function HoldingState({
   isPaying,
   onPay,
   onCancel,
+  phone,
+  onPhoneChange,
 }: {
   reservation: Reservation;
   remainingSeconds: number;
@@ -151,6 +160,8 @@ function HoldingState({
   isPaying: boolean;
   onPay: () => void;
   onCancel: () => void;
+  phone: string;
+  onPhoneChange: (v: string) => void;
 }) {
   return (
     <div className="space-y-6">
@@ -180,8 +191,22 @@ function HoldingState({
         <Row icon={Hash} label="Reservation" value={reservation.reservationCode} />
       </dl>
 
-      <div className="space-y-2 pt-1">
-        <Button size="lg" className="h-12 w-full text-base" onClick={onPay} disabled={isPaying}>
+      <div className="space-y-3 pt-1">
+        <div>
+          <label htmlFor="pay-phone" className="mb-1 block text-xs font-medium text-muted-foreground">
+            <Smartphone className="mr-1 inline size-3" />
+            Phone (for SMS receipt)
+          </label>
+          <input
+            id="pay-phone"
+            type="tel"
+            placeholder="88017XXXXXXXX"
+            value={phone}
+            onChange={(e) => onPhoneChange(e.target.value)}
+            className="flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+          />
+        </div>
+        <Button size="lg" className="h-12 w-full text-base" onClick={onPay} disabled={isPaying || !phone}>
           {isPaying ? (
             <>
               <Loader2 className="size-4 animate-spin" />
@@ -190,7 +215,7 @@ function HoldingState({
           ) : (
             <>
               <CreditCard className="size-4" />
-              Mock Pay Now
+              Pay Now
             </>
           )}
         </Button>

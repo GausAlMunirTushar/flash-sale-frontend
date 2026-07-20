@@ -15,6 +15,7 @@ export interface Reservation {
   reservationCode: string;
   status: string;
   paidAt: number | null;
+  phone: string | null;
 }
 
 export interface BackendReservation {
@@ -26,4 +27,5 @@ export interface BackendReservation {
   expiresAt: string;
   paidAt: string | null;
   createdAt: string;
+  phone: string | null;
 }

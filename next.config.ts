@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
         source: "/docs/:path*",
         destination: `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/docs/:path*`,
       },
+      {
+        source: "/guest/:path*",
+        destination: `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/guest/:path*`,
+      },
     ];
   },
 };
