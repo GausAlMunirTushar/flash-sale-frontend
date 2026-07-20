@@ -1,4 +1,4 @@
-import api, { setAuthToken } from '@/lib/api';
+import api from '@/lib/api';
 
 let initialized = false;
 
@@ -7,12 +7,7 @@ export async function initGuestSession(): Promise<void> {
   initialized = true;
 
   try {
-    const { data } = await api.post('/api/auth/anonymous');
-
-    const token = data?.token || '';
-    if (token) {
-      setAuthToken(token);
-    }
+    await api.post('/api/auth/sign-in/anonymous');
   } catch {
     // Guest session failed — backend may not be running
   }
