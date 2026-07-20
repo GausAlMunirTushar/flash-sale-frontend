@@ -50,9 +50,18 @@ export function useReservationFlow() {
           description: `Seat ${created.seatNumber} is on hold for 5 minutes.`,
         });
         invalidateSeats();
-      } catch {
+      } catch (err: unknown) {
         setPhase("idle");
-        toast.error("That seat just got taken", { description: "Please pick another seat." });
+        const status = (err as { response?: { status?: number } })?.response?.status;
+        if (status === 401) {
+          toast.error("Session expired", {
+            description: "Please refresh the page to reconnect.",
+          });
+        } else {
+          toast.error("That seat just got taken", {
+            description: "Please pick another seat.",
+          });
+        }
         invalidateSeats();
       }
     },

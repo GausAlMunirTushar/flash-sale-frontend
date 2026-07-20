@@ -12,7 +12,7 @@ export function StatsRow() {
   if (isError) {
     return (
       <section className="mx-auto max-w-6xl px-6 py-8">
-        <div className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
+        <div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-6 text-sm text-muted-foreground">
           <AlertCircle className="size-4 text-destructive" />
           Could not load seat statistics
         </div>
@@ -43,7 +43,7 @@ export function StatsRow() {
     <section className="mx-auto max-w-6xl px-6 py-8">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map(({ icon: Icon, bg, fg, value, label }) => (
-          <div key={label} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <div key={label} className="flex items-center gap-3 rounded-lg border border-border bg-card p-4">
             <span className={`flex size-11 shrink-0 items-center justify-center rounded-full ${bg}`}>
               <Icon className={`size-5 ${fg}`} />
             </span>
@@ -54,7 +54,7 @@ export function StatsRow() {
           </div>
         ))}
 
-        <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+        <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-4">
           <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-urgency-amber/10">
             <Clock className="size-5 text-urgency-amber" />
           </span>

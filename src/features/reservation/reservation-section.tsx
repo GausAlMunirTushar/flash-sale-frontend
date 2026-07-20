@@ -2,7 +2,6 @@
 
 import { SeatGrid } from "@/components/seat/seat-grid";
 import { ReservationPanel } from "@/components/reservation/reservation-panel";
-import { HowItWorks } from "@/components/shared/how-it-works";
 import { useReservationFlow } from "@/features/reservation/use-reservation-flow";
 
 export function ReservationSection() {
@@ -38,7 +37,6 @@ export function ReservationSection() {
           cancelDialogOpen={cancelDialogOpen}
           setCancelDialogOpen={setCancelDialogOpen}
         />
-        <HowItWorks />
       </div>
     </section>
   );

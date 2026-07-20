@@ -64,7 +64,7 @@ export function ReservationPanel({
 }: ReservationPanelProps) {
   return (
     <>
-      <Card className="rounded-3xl border-border shadow-sm">
+      <Card className="rounded-xl border-border">
         <CardHeader className="flex-row items-center justify-between border-b border-border/60 pb-4">
           <p className="text-lg font-semibold">Your Reservation</p>
           {(phase === "holding" || phase === "paying") && (
@@ -166,7 +166,7 @@ function HoldingState({
         </CircularProgress>
       </div>
 
-      <div className="flex items-start gap-2 rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground">
+      <div className="flex items-start gap-2 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
         <Info className="mt-0.5 size-3.5 shrink-0" />
         Complete the mock payment before time runs out. Your seat will be released automatically.
       </div>

@@ -7,11 +7,6 @@ import { GuestBadge } from "@/components/layout/guest-badge";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 
-const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "#how-it-works", label: "How It Works" },
-];
-
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -24,18 +19,6 @@ export function Navbar() {
           </span>
           FlashSeat
         </Link>
-
-        <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground md:flex">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -51,23 +34,6 @@ export function Navbar() {
           </Button>
         </div>
       </div>
-
-      {mobileOpen && (
-        <div className="border-t border-border/60 md:hidden">
-          <nav className="flex flex-col gap-2 px-6 py-4">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
-                onClick={() => setMobileOpen(false)}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-      )}
     </header>
   );
 }

@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from "@/providers/query-provider";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
+import { AuthInit } from "@/components/shared/auth-init";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       <QueryProvider>
         <TooltipProvider>
           <ErrorBoundary>
-            {children}
+            <AuthInit>
+              {children}
+            </AuthInit>
           </ErrorBoundary>
           <Toaster richColors position="top-center" />
         </TooltipProvider>

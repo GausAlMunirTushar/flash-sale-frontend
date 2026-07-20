@@ -36,7 +36,7 @@ export function SeatGrid({ onSelectSeat, selectionDisabled }: SeatGridProps) {
 
   if (isError) {
     return (
-      <Card className="rounded-3xl border-border shadow-sm">
+      <Card className="rounded-xl border-border">
         <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
           <AlertCircle className="size-8 text-destructive" />
           <p className="font-semibold">Failed to load seats</p>
@@ -51,7 +51,7 @@ export function SeatGrid({ onSelectSeat, selectionDisabled }: SeatGridProps) {
     : [];
 
   return (
-    <Card className="rounded-3xl border-border shadow-sm">
+      <Card className="rounded-xl border-border">
       <CardHeader className="flex-col items-start gap-3 border-b border-border/60 pb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-lg font-semibold">Choose Your Seat</p>

@@ -25,7 +25,7 @@ export function Hero() {
 
   return (
     <section className="mx-auto max-w-6xl px-6 pt-10">
-      <div className="relative grid items-center gap-10 overflow-hidden rounded-3xl border border-border bg-linear-to-br from-urgency-red/5 via-transparent to-primary/5 px-8 py-14 sm:grid-cols-2 sm:px-12">
+      <div className="relative grid items-center gap-10 overflow-hidden rounded-xl border border-border bg-linear-to-br from-urgency-red/5 via-transparent to-primary/5 px-6 py-10 sm:grid-cols-2 sm:px-10 sm:py-14">
         <div>
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Badge className="gap-1.5 bg-urgency-red/10 text-urgency-red hover:bg-urgency-red/10">
@@ -92,7 +92,7 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.85, rotate: -8 }}
             animate={{ opacity: 1, scale: 1, rotate: -8 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="flex size-40 items-center justify-center rounded-3xl bg-urgency-red text-primary-foreground shadow-xl"
+            className="flex size-32 items-center justify-center rounded-xl bg-urgency-red text-primary-foreground sm:size-40"
           >
             <Ticket className="size-16" />
           </motion.div>
@@ -100,7 +100,7 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.5 }}
-            className="absolute -right-1 top-2 flex size-9 items-center justify-center rounded-full bg-urgency-amber text-white shadow-lg"
+            className="absolute -right-1 top-2 flex size-8 items-center justify-center rounded-full bg-urgency-amber text-white sm:size-9"
           >
             <Sparkles className="size-4" />
           </motion.span>
