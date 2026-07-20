@@ -140,6 +140,10 @@ function ReservingState() {
   );
 }
 
+function isValidPhone(v: string): boolean {
+  return /^01\d{9}$/.test(v.replace(/\D/g, ''));
+}
+
 function HoldingState({
   reservation,
   remainingSeconds,
@@ -163,6 +167,10 @@ function HoldingState({
   phone: string;
   onPhoneChange: (v: string) => void;
 }) {
+  const digits = phone.replace(/\D/g, '');
+  const phoneValid = phone.length > 0 && isValidPhone(phone);
+  const phoneError = phone.length > 0 && !phoneValid;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
@@ -179,7 +187,7 @@ function HoldingState({
 
       <div className="flex items-start gap-2 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
         <Info className="mt-0.5 size-3.5 shrink-0" />
-        Complete the mock payment before time runs out. Your seat will be released automatically.
+        Complete the payment before time runs out. Your seat will be released automatically.
       </div>
 
       <Separator />
@@ -200,13 +208,23 @@ function HoldingState({
           <input
             id="pay-phone"
             type="tel"
-            placeholder="88017XXXXXXXX"
+            placeholder="01726XXXXXX"
             value={phone}
             onChange={(e) => onPhoneChange(e.target.value)}
-            className="flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className={`flex h-10 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring ${
+              phoneError ? 'border-destructive' : 'border-input'
+            }`}
           />
+          {phoneError && (
+            <p className="mt-1 text-xs text-destructive">
+              Enter a valid 11-digit BD number (01XXXXXXXXX)
+            </p>
+          )}
+          {phone.length > 0 && phoneValid && (
+            <p className="mt-1 text-xs text-success">Valid number</p>
+          )}
         </div>
-        <Button size="lg" className="h-12 w-full text-base" onClick={onPay} disabled={isPaying || !phone}>
+        <Button size="lg" className="h-12 w-full text-base" onClick={onPay} disabled={isPaying || !phoneValid}>
           {isPaying ? (
             <>
               <Loader2 className="size-4 animate-spin" />
